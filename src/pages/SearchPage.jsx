@@ -2,24 +2,33 @@ import { useSearchParams } from "react-router";
 import { Navbar } from "../components/Navbar";
 import { useEffect, useState } from "react";
 import { BeatLoader } from "react-spinners";
+import { Paginator } from "../components/Paginator";
+
+const LIMIT_PER_PAGE = 10;
 
 const SearchPage = () => {
     const [query] = useSearchParams();
     const [loading, setLoading] = useState(false);
     const [products, setProducts] = useState([]);
+    const [page, setPage] = useState(1);
+    const [total, setTotal] = useState(0);
 
     const searchText = query.get("text");
 
     const getAllProducts = async () => {
         try {
             setLoading(true);
-            const response = await fetch(`http://localhost:3900/api/v1/products/?q=${searchText}`, {
-                method: "GET",
-            });
+            const response = await fetch(
+                `http://localhost:3900/api/v1/products/?q=${searchText}&limit=${LIMIT_PER_PAGE}&page=${page}`,
+                {
+                    method: "GET",
+                }
+            );
             const result = await response.json();
 
             console.log(result);
             setProducts(result.data.products);
+            setTotal(result.data.total);
         } catch (err) {
             alert("Cannot get products", err.message);
         } finally {
@@ -29,7 +38,7 @@ const SearchPage = () => {
 
     useEffect(() => {
         getAllProducts();
-    }, [searchText]);
+    }, [searchText, page]);
 
     return (
         <div>
@@ -45,11 +54,15 @@ const SearchPage = () => {
                         <div className="p-8 flex-1 flex flex-col gap-5 bg-emerald-100">
                             {products.map((elem) => {
                                 return (
-                                    <div className="border-1 border-amber-900 rounded-lg p-5">
-                                        <h3 className="text-xl font-bold text-orange-600">{elem.title}</h3>
-                                        <img src={elem.images?.[0]} />
-                                        <p>Rs. {elem.price}</p>
-                                        <p>In stock: {elem.quantity}</p>
+                                    <div className="border-1 border-amber-900 rounded-lg p-5 flex">
+                                        <div className="w-40 h-40">
+                                            <img src={elem.images?.[0]} className="w-full" />
+                                        </div>
+                                        <div className="flex-1">
+                                            <h3 className="text-xl font-bold text-orange-600">{elem.title}</h3>
+                                            <p>Rs. {elem.price}</p>
+                                            <p>In stock: {elem.quantity}</p>
+                                        </div>
                                     </div>
                                 );
                             })}
@@ -61,6 +74,14 @@ const SearchPage = () => {
                                     </p>
                                 </div>
                             )}
+                            <div>
+                                <Paginator
+                                    limit={LIMIT_PER_PAGE}
+                                    page={page}
+                                    total={total}
+                                    handlePageClick={(val) => setPage(val)}
+                                />
+                            </div>
                         </div>
                     </div>
                 )}

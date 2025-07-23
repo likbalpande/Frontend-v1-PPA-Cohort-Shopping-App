@@ -1,9 +1,12 @@
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useSearchParams } from "react-router";
 import { IoMenu } from "react-icons/io5";
 import { useState } from "react";
 
 const Navbar = () => {
-    const [searchText, setSearchText] = useState("");
+    const [query] = useSearchParams();
+    const searchTextDefaultValue = query.get("text");
+
+    const [searchText, setSearchText] = useState(searchTextDefaultValue || "");
     const navigate = useNavigate();
 
     const handleSearch = () => {
