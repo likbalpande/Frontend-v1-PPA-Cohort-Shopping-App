@@ -19,7 +19,9 @@ const SearchPage = () => {
         try {
             setLoading(true);
             const response = await fetch(
-                `http://localhost:3900/api/v1/products/?q=${searchText}&limit=${LIMIT_PER_PAGE}&page=${page}`,
+                `${
+                    import.meta.env.VITE_BACKEND_URL
+                }/api/v1/products/?q=${searchText}&limit=${LIMIT_PER_PAGE}&page=${page}`,
                 {
                     method: "GET",
                 }

@@ -2,7 +2,7 @@ import { Link, useNavigate, useSearchParams } from "react-router";
 import { IoMenu } from "react-icons/io5";
 import { useState } from "react";
 
-const Navbar = () => {
+const Navbar = ({ searchBox = true }) => {
     const [query] = useSearchParams();
     const searchTextDefaultValue = query.get("text");
 
@@ -16,22 +16,24 @@ const Navbar = () => {
     return (
         <div className="flex px-6 py-4 bg-amber-200 justify-between items-center">
             <div className="text-xl font-bold text-purple-800">My Shopping App</div>
-            <div className="flex gap-4 items-center">
-                {/* controlled input / component */}
-                <input
-                    className="px-2 py-1 border-1 border-amber-900 rounded-lg"
-                    value={searchText}
-                    onChange={(e) => {
-                        setSearchText(e.target.value);
-                    }}
-                />
-                <button
-                    onClick={handleSearch}
-                    className="px-2 py-1 bg-amber-700 text-white rounded-lg cursor-pointer transition hover:bg-amber-800"
-                >
-                    Search
-                </button>
-            </div>
+            {searchBox && (
+                <div className="flex gap-4 items-center">
+                    {/* controlled input / component */}
+                    <input
+                        className="px-2 py-1 border-1 border-amber-900 rounded-lg"
+                        value={searchText}
+                        onChange={(e) => {
+                            setSearchText(e.target.value);
+                        }}
+                    />
+                    <button
+                        onClick={handleSearch}
+                        className="px-2 py-1 bg-amber-700 text-white rounded-lg cursor-pointer transition hover:bg-amber-800"
+                    >
+                        Search
+                    </button>
+                </div>
+            )}
             <div className="flex gap-4 items-center">
                 <Link to="/" className="text-blue-700 underline">
                     Home
