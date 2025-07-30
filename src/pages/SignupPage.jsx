@@ -2,13 +2,17 @@ import { useState } from "react";
 import { Navbar } from "../components/Navbar";
 import { PuffLoader } from "react-spinners";
 import { showErrorToast, showSuccessToast } from "../../utils/toastMessageHelper";
+import { Link, useNavigate } from "react-router";
 
 const SignupPage = () => {
     const [isOtpSent, setIsOtpSent] = useState(false);
     const [sendingOTP, setSendingOTP] = useState(false);
+    const [signingUpUser, setSigningUpUser] = useState(false);
+    const navigate = useNavigate();
 
     const handleUserSignup = async (e) => {
         try {
+            setSigningUpUser(true);
             const email = e.target.email.value;
             const otp = e.target.otp.value;
             const password = e.target.password.value;
@@ -27,12 +31,19 @@ const SignupPage = () => {
 
             if (response.status == 201) {
                 showSuccessToast("Signup Success!");
+                navigate("/login");
+            } else if (response.status == 409) {
+                const result = await response.json();
+                showErrorToast(result.message);
+                navigate("/login");
             } else {
                 const result = await response.json();
                 showErrorToast(result.message);
             }
         } catch (err) {
             showErrorToast(`Unable to signup: ${err.message}`);
+        } finally {
+            setSigningUpUser(false);
         }
     };
 
@@ -114,7 +125,7 @@ const SignupPage = () => {
                             </div>
                         </>
                     )}
-                    {sendingOTP ? (
+                    {sendingOTP || signingUpUser ? (
                         <div className="flex items-center justify-center p-10">
                             <PuffLoader size="50" />
                         </div>
@@ -132,6 +143,11 @@ const SignupPage = () => {
                         </>
                     )}
                 </form>
+            </div>
+            <div className="m-4 text-center">
+                <Link to="/login">
+                    Already have an account? <span className="underline text-blue-600">Login here</span>
+                </Link>
             </div>
         </div>
     );
