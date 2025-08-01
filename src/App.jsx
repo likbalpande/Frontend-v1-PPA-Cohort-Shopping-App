@@ -5,12 +5,50 @@ import { ViewPage } from "./pages/ViewPage";
 import { NotFoundPage } from "./pages/NotFoundPage";
 import { LoginPage } from "./pages/LoginPage";
 import { SignupPage } from "./pages/SignupPage";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { showErrorToast } from "../utils/toastMessageHelper";
+import { RingLoader } from "react-spinners";
 
 const App = () => {
+    const [appLoading, setAppLoading] = useState(true);
     const [user, setUser] = useState({ isLoggedIn: false });
 
     const { isLoggedIn } = user;
+
+    const getLoggedInUser = async () => {
+        try {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/users/me`, {
+                method: "GET",
+                credentials: "include",
+            });
+
+            if (response.status == 200) {
+                const result = await response.json();
+                setUser({
+                    isLoggedIn: true,
+                    ...result.data.user,
+                });
+            } else {
+                showErrorToast("Please login!");
+            }
+        } catch (err) {
+            showErrorToast(`Error during user validation: ${err.message}`);
+        } finally {
+            setAppLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        getLoggedInUser();
+    }, []);
+
+    if (appLoading) {
+        return (
+            <div className="h-screen flex items-center justify-center">
+                <RingLoader size={50} />
+            </div>
+        );
+    }
 
     if (!isLoggedIn) {
         return (
