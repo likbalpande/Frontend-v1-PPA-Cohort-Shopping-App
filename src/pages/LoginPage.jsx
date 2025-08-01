@@ -24,6 +24,7 @@ const LoginPage = ({ setUser }) => {
                 headers: {
                     "content-type": "application/json",
                 },
+                credentials: "include",
             });
 
             const result = await response.json();
@@ -31,7 +32,7 @@ const LoginPage = ({ setUser }) => {
             if (response.status == 200) {
                 showSuccessToast("Login Success!");
                 setUser({
-                    ...result.data.user,
+                    // ...result.data.user,
                     isLoggedIn: true,
                 });
                 navigate("/");
