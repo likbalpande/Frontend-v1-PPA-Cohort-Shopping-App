@@ -6,7 +6,7 @@ import { NotFoundPage } from "./pages/NotFoundPage";
 import { LoginPage } from "./pages/LoginPage";
 import { SignupPage } from "./pages/SignupPage";
 import { RingLoader } from "react-spinners";
-import { AppContextProvider, useAuthContext } from "./context/AppContext";
+import { useAuthContext } from "./context/AppContext";
 
 const App = () => {
     const { appLoading, isLoggedIn } = useAuthContext();
