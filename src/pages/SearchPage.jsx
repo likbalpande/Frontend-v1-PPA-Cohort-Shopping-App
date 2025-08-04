@@ -1,4 +1,4 @@
-import { useSearchParams } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import { Navbar } from "../components/Navbar";
 import { useEffect, useState } from "react";
 import { BeatLoader } from "react-spinners";
@@ -13,6 +13,8 @@ const SearchPage = () => {
     const [page, setPage] = useState(1);
     const [total, setTotal] = useState(0);
 
+    const navigate = useNavigate();
+
     const searchText = query.get("text");
 
     const getAllProducts = async () => {
@@ -22,6 +24,7 @@ const SearchPage = () => {
                 `${import.meta.env.VITE_BACKEND_URL}/products/?q=${searchText}&limit=${LIMIT_PER_PAGE}&page=${page}`,
                 {
                     method: "GET",
+                    credentials: "include",
                 }
             );
             const result = await response.json();
@@ -40,6 +43,10 @@ const SearchPage = () => {
         getAllProducts();
     }, [searchText, page]);
 
+    const handleViewProduct = (productId) => {
+        navigate(`/view/${productId}`);
+    };
+
     return (
         <div>
             <Navbar />
@@ -54,7 +61,11 @@ const SearchPage = () => {
                         <div className="p-8 flex-1 flex flex-col gap-5 bg-emerald-100">
                             {products.map((elem) => {
                                 return (
-                                    <div className="border-1 border-amber-900 rounded-lg p-5 flex">
+                                    <div
+                                        role="button"
+                                        onClick={() => handleViewProduct(elem._id)}
+                                        className="border-1 border-amber-900 rounded-lg p-5 flex hover:bg-white/40 cursor-pointer hover:scale-102 transition"
+                                    >
                                         <div className="w-40 h-40">
                                             <img src={elem.images?.[0]} className="w-full" />
                                         </div>

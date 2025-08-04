@@ -1,6 +1,8 @@
 import { Link, useNavigate, useSearchParams } from "react-router";
 import { IoMenu } from "react-icons/io5";
 import { useState } from "react";
+import { Button } from "./ui/Button";
+import { useAuthContext } from "../context/AppContext";
 
 const Navbar = ({ searchBox = true }) => {
     const [query] = useSearchParams();
@@ -8,6 +10,7 @@ const Navbar = ({ searchBox = true }) => {
 
     const [searchText, setSearchText] = useState(searchTextDefaultValue || "");
     const navigate = useNavigate();
+    const { isLoggedIn } = useAuthContext();
 
     const handleSearch = () => {
         navigate(`/search?text=${searchText}`);
@@ -38,9 +41,13 @@ const Navbar = ({ searchBox = true }) => {
                 <Link to="/" className="text-blue-700 underline">
                     Home
                 </Link>
-                <Link to="/login" className="text-blue-700 underline">
-                    Login
-                </Link>
+                {isLoggedIn ? (
+                    <Button>Logout</Button>
+                ) : (
+                    <Link to="/login" className="text-blue-700 underline">
+                        Login
+                    </Link>
+                )}
                 <div className="p-[6px] border-1 border-transparent rounded-full bg-amber-700 text-white text-xl hover:border-1 hover:bg-transparent hover:text-amber-800 hover:border-amber-800 cursor-pointer">
                     <IoMenu />
                 </div>

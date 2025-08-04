@@ -3,9 +3,11 @@ import { Navbar } from "../components/Navbar";
 import { PuffLoader } from "react-spinners";
 import { showErrorToast, showSuccessToast } from "../../utils/toastMessageHelper";
 import { Link, useNavigate } from "react-router";
+import { useAuthContext } from "../context/AppContext";
 
-const LoginPage = ({ setUser }) => {
+const LoginPage = () => {
     const [loggingInUser, setLoggingInUser] = useState(false);
+    const { handleSetUser } = useAuthContext();
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -31,7 +33,7 @@ const LoginPage = ({ setUser }) => {
 
             if (response.status == 200) {
                 showSuccessToast("Login Success!");
-                setUser({
+                handleSetUser({
                     // ...result.data.user,
                     isLoggedIn: true,
                 });
