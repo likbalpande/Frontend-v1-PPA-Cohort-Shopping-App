@@ -49,7 +49,6 @@ const SearchPage = () => {
 
     return (
         <div>
-            <Navbar />
             <div>
                 {loading ? (
                     <div className="fixed top-1/2 left-1/2 -translate-1/2">

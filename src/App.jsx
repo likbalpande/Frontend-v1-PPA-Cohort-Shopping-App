@@ -7,6 +7,7 @@ import { LoginPage } from "./pages/LoginPage";
 import { SignupPage } from "./pages/SignupPage";
 import { RingLoader } from "react-spinners";
 import { useAuthContext } from "./context/AppContext";
+import { BasicLayout } from "./pages/BasicLayout";
 
 const App = () => {
     const { appLoading, isLoggedIn } = useAuthContext();
@@ -23,11 +24,13 @@ const App = () => {
         return (
             <BrowserRouter>
                 <Routes>
-                    <Route path="/login" element={<LoginPage />} />
-                    <Route path="/signup" element={<SignupPage />} />
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/search" element={<SearchPage />} />
-                    <Route path="/view/:productId" element={<ViewPage />} />
+                    <Route element={<BasicLayout />}>
+                        <Route path="/login" element={<LoginPage />} />
+                        <Route path="/signup" element={<SignupPage />} />
+                        <Route path="/" element={<HomePage />} />
+                        <Route path="/search" element={<SearchPage />} />
+                        <Route path="/view/:productId" element={<ViewPage />} />
+                    </Route>
                     <Route path="*" element={<NotFoundPage />} />
                 </Routes>
             </BrowserRouter>
@@ -37,12 +40,14 @@ const App = () => {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/search" element={<SearchPage />} />
-                <Route path="/view/:productId" element={<ViewPage />} />
-                {/* <Route path="/cart" element={<CartPage />} /> */}
-                {/* <Route path="/profile" element={<ProfilePage />} /> */}
-                {/* <Route path="/orders" element={<OrdersPage />} /> */}
+                <Route element={<BasicLayout />}>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/search" element={<SearchPage />} />
+                    <Route path="/view/:productId" element={<ViewPage />} />
+                    {/* <Route path="/cart" element={<CartPage />} /> */}
+                    {/* <Route path="/profile" element={<ProfilePage />} /> */}
+                    {/* <Route path="/orders" element={<OrdersPage />} /> */}
+                </Route>
                 <Route path="*" element={<NotFoundPage />} />
             </Routes>
         </BrowserRouter>

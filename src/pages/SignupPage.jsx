@@ -90,7 +90,6 @@ const SignupPage = () => {
 
     return (
         <div>
-            <Navbar searchBox={false} />
             <div className="flex flex-col gap-6 items-center justify-center p-8">
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                     <div className="flex gap-4 items-center">

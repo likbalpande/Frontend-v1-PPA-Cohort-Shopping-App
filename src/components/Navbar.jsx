@@ -5,12 +5,13 @@ import { Button } from "./ui/Button";
 import { useAuthContext } from "../context/AppContext";
 
 const Navbar = ({ searchBox = true }) => {
+    console.log("re-rendered -- Navbar");
     const [query] = useSearchParams();
     const searchTextDefaultValue = query.get("text");
 
     const [searchText, setSearchText] = useState(searchTextDefaultValue || "");
     const navigate = useNavigate();
-    const { isLoggedIn } = useAuthContext();
+    const { isLoggedIn, handleLogout } = useAuthContext();
 
     const handleSearch = () => {
         navigate(`/search?text=${searchText}`);
@@ -42,7 +43,7 @@ const Navbar = ({ searchBox = true }) => {
                     Home
                 </Link>
                 {isLoggedIn ? (
-                    <Button>Logout</Button>
+                    <Button onClick={handleLogout}>Logout</Button>
                 ) : (
                     <Link to="/login" className="text-blue-700 underline">
                         Login

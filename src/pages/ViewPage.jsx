@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
-import { Navbar } from "../components/Navbar";
 import { useNavigate, useParams } from "react-router";
 import { LoadingSkeleton } from "../components/ui/LoadingSkeleton";
 import { Button } from "../components/ui/Button";
-import { showSuccessToast } from "../../utils/toastMessageHelper";
 import { useAuthContext } from "../context/AppContext";
+import { ClipLoader } from "react-spinners";
 
 const ViewPage = () => {
+    console.log("re-rendered -- ViewPage");
     const [loading, setLoading] = useState(false);
     const [productInfo, setProductInfo] = useState({});
-    const { isLoggedIn } = useAuthContext();
+    const { isLoggedIn, addToCart, cart, addingProductToCart } = useAuthContext();
     const { productId } = useParams();
     const navigate = useNavigate();
 
@@ -38,27 +38,52 @@ const ViewPage = () => {
     const handleAddToCart = () => {
         if (isLoggedIn) {
             // add to cart logic
-            showSuccessToast("Product added to cart!");
+            addToCart(productInfo._id);
         } else {
             // redirect him to login page
             navigate("/login");
         }
     };
 
+    const currentItem = cart.find((elem) => elem.product._id === productId);
+    console.log("🟡 : currentItem:", currentItem);
+
     return (
         <div>
-            <Navbar />
             {loading ? (
                 <div className="w-100 h-75 rounded-xl m-auto">
                     <LoadingSkeleton className="h-full" />
                 </div>
             ) : (
                 <div>
-                    <p className="text-center p-4 text-2xl">ViewPage</p>
-                    <div>{JSON.stringify(productInfo, null, 4)}</div>
-                    <div className="flex justify-center p-6">
-                        <Button onClick={handleAddToCart}>Add To Cart</Button>
+                    <p className="text-center p-4 text-2xl">{productInfo.title}</p>
+                    <p className="text-center p-4 text-2xl">Rs. {productInfo.price}</p>
+                    <p className="text-center p-4 text-2xl">Quantity: {productInfo.quantity}</p>
+                    <p className="text-center p-4 text-2xl">{productInfo.title}</p>
+                    <div className="flex gap-6 flex-wrap items-center justify-center">
+                        {productInfo.images?.map((imgUrl) => {
+                            return <img src={imgUrl} className="h-50 w-50" />;
+                        })}
                     </div>
+                    {addingProductToCart ? (
+                        <ClipLoader />
+                    ) : (
+                        <div className="flex justify-center p-6">
+                            {currentItem ? (
+                                <>
+                                    <div className="flex gap-3 items-center justify-center">
+                                        <Button variant="outline-primary">-</Button>
+                                        <p>{currentItem.cartQuantity}</p>
+                                        <Button variant="outline-primary" onClick={handleAddToCart}>
+                                            +
+                                        </Button>
+                                    </div>
+                                </>
+                            ) : (
+                                <Button onClick={handleAddToCart}>Add To Cart</Button>
+                            )}
+                        </div>
+                    )}
                 </div>
             )}
         </div>
