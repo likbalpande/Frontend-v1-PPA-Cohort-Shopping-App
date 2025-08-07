@@ -8,6 +8,12 @@ import { SignupPage } from "./pages/SignupPage";
 import { RingLoader } from "react-spinners";
 import { useAuthContext } from "./context/AppContext";
 import { BasicLayout } from "./pages/BasicLayout";
+import { AdminLayout } from "./pages/Admin/AdminLayout";
+import { AdminDashboard } from "./pages/Admin/AdminDashboard";
+import { AdminOrdersPage } from "./pages/Admin/AdminOrdersPage";
+import { AdminFeedbacksPage } from "./pages/Admin/AdminFeedbacksPage";
+import { AdminProductsPage } from "./pages/Admin/AdminProductsPage";
+import { AdminContextProvider } from "./context/AdminContext";
 
 const App = () => {
     const { appLoading, isLoggedIn } = useAuthContext();
@@ -48,6 +54,14 @@ const App = () => {
                     {/* <Route path="/profile" element={<ProfilePage />} /> */}
                     {/* <Route path="/orders" element={<OrdersPage />} /> */}
                 </Route>
+                <AdminContextProvider>
+                    <Route path="/admin" element={<AdminLayout />}>
+                        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+                        <Route path="/admin/orders" element={<AdminOrdersPage />} />
+                        <Route path="/admin/products" element={<AdminProductsPage />} />
+                        <Route path="/admin/feedbacks" element={<AdminFeedbacksPage />} />
+                    </Route>
+                </AdminContextProvider>
                 <Route path="*" element={<NotFoundPage />} />
             </Routes>
         </BrowserRouter>

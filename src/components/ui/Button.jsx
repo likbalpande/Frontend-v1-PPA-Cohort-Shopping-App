@@ -3,11 +3,15 @@ const STYLES_MAPPING = {
     "outline-primary": "border border-amber-600 text-black/90 px-1.5 hover:bg-amber-600 hover:text-white/90 rounded-md",
 };
 
-const Button = ({ children, className, onClick, variant = "primary" }) => {
+const Button = ({ disabled = false, children, className, onClick, variant = "primary" }) => {
     return (
         <button
+            disabled={disabled}
             onClick={onClick}
-            className={`cursor-pointer transition hover:scale-102 ${STYLES_MAPPING[variant]} ${className}`}
+            className={`
+                disabled:cursor-not-allowed disabled:opacity-60
+                cursor-pointer transition hover:scale-102 ${STYLES_MAPPING[variant]} ${className}
+            `}
         >
             {children}
         </button>

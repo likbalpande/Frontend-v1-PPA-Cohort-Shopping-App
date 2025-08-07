@@ -9,7 +9,7 @@ const ViewPage = () => {
     console.log("re-rendered -- ViewPage");
     const [loading, setLoading] = useState(false);
     const [productInfo, setProductInfo] = useState({});
-    const { isLoggedIn, addToCart, cart, addingProductToCart } = useAuthContext();
+    const { isLoggedIn, addToCart, cart, updatingCartState, removeFromCart } = useAuthContext();
     const { productId } = useParams();
     const navigate = useNavigate();
 
@@ -33,12 +33,22 @@ const ViewPage = () => {
 
     useEffect(() => {
         getProductInfo();
-    }, []);
+    }, [productId]);
 
     const handleAddToCart = () => {
         if (isLoggedIn) {
             // add to cart logic
             addToCart(productInfo._id);
+        } else {
+            // redirect him to login page
+            navigate("/login");
+        }
+    };
+
+    const handleRemoveFromCart = () => {
+        if (isLoggedIn) {
+            // add to cart logic
+            removeFromCart(productInfo._id);
         } else {
             // redirect him to login page
             navigate("/login");
@@ -65,14 +75,16 @@ const ViewPage = () => {
                             return <img src={imgUrl} className="h-50 w-50" />;
                         })}
                     </div>
-                    {addingProductToCart ? (
+                    {updatingCartState ? (
                         <ClipLoader />
                     ) : (
                         <div className="flex justify-center p-6">
                             {currentItem ? (
                                 <>
                                     <div className="flex gap-3 items-center justify-center">
-                                        <Button variant="outline-primary">-</Button>
+                                        <Button variant="outline-primary" onClick={handleRemoveFromCart}>
+                                            -
+                                        </Button>
                                         <p>{currentItem.cartQuantity}</p>
                                         <Button variant="outline-primary" onClick={handleAddToCart}>
                                             +

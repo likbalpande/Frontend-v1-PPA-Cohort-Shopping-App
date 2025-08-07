@@ -6,9 +6,10 @@ const AuthContext = createContext();
 
 const AppContextProvider = ({ children }) => {
     const [appLoading, setAppLoading] = useState(true);
-    const [addingProductToCart, setAddingProductToCart] = useState(false);
+    const [updatingCartState, setUpdatingCartState] = useState(false);
     const [user, setUser] = useState({ isLoggedIn: false });
     const [cart, setCart] = useState([]);
+    const [placingOrder, setPlacingOrder] = useState(false);
 
     const { isLoggedIn } = user;
 
@@ -37,8 +38,15 @@ const AppContextProvider = ({ children }) => {
 
     useEffect(() => {
         getLoggedInUser();
-        getCartItems();
     }, []);
+
+    useEffect(() => {
+        if (isLoggedIn) {
+            getCartItems();
+        } else {
+            setCart([]);
+        }
+    }, [isLoggedIn]);
 
     const handleLogout = async () => {
         try {
@@ -64,7 +72,7 @@ const AppContextProvider = ({ children }) => {
 
     const getCartItems = async () => {
         try {
-            setAddingProductToCart(true);
+            setUpdatingCartState(true);
             const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/cart/`, {
                 method: "GET",
                 credentials: "include",
@@ -74,33 +82,81 @@ const AppContextProvider = ({ children }) => {
         } catch (err) {
             showErrorToast(`Error during get cart items: ${err.message}`);
         } finally {
-            setAddingProductToCart(false);
+            setUpdatingCartState(false);
         }
     };
 
     const addToCart = async (productId) => {
         try {
-            setAddingProductToCart(true);
-            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/cart/${productId}`, {
+            setUpdatingCartState(true);
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/cart/${productId}/add`, {
                 method: "POST",
                 credentials: "include",
             });
             console.log("🟡 : response:", response);
-            await getCartItems();
+            const result = await response.json();
+            if (result.isSuccess) {
+                setCart(result.data.cart);
+            } else {
+                showErrorToast(result.message);
+            }
         } catch (err) {
             showErrorToast(`Error during adding product to cart: ${err.message}`);
         } finally {
-            setAddingProductToCart(false);
+            setUpdatingCartState(false);
         }
     };
 
-    // const removeFromCart = (...) => {
-    //     setCart(...)
-    // }
+    const removeFromCart = async (productId) => {
+        try {
+            setUpdatingCartState(true);
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/cart/${productId}/remove`, {
+                method: "POST",
+                credentials: "include",
+            });
+            console.log("🟡 : response:", response);
+            const result = await response.json();
+            if (result.isSuccess) {
+                setCart(result.data.cart);
+            } else {
+                showErrorToast(result.message);
+            }
+        } catch (err) {
+            showErrorToast(`Error during adding product to cart: ${err.message}`);
+        } finally {
+            setUpdatingCartState(false);
+        }
+    };
 
     const handleSetUser = (data) => {
         // add any logic here
         setUser(data);
+    };
+
+    const handleCheckout = async (address) => {
+        try {
+            setPlacingOrder(true);
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/orders`, {
+                method: "POST",
+                credentials: "include",
+                body: JSON.stringify({ address }),
+                headers: {
+                    "content-type": "application/json",
+                },
+            });
+            console.log("🟡 : response:", response);
+            const result = await response.json();
+            if (result.isSuccess) {
+                showSuccessToast(result.message);
+                setCart([]);
+            } else {
+                showErrorToast(result.message);
+            }
+        } catch (err) {
+            showErrorToast(`Error during adding product to cart: ${err.message}`);
+        } finally {
+            setPlacingOrder(false);
+        }
     };
 
     const sharedValues = {
@@ -111,7 +167,10 @@ const AppContextProvider = ({ children }) => {
         handleLogout,
         cart,
         addToCart,
-        addingProductToCart,
+        updatingCartState,
+        removeFromCart,
+        handleCheckout,
+        placingOrder,
     };
 
     return <AuthContext value={sharedValues}>{children}</AuthContext>;
