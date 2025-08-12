@@ -54,14 +54,19 @@ const App = () => {
                     {/* <Route path="/profile" element={<ProfilePage />} /> */}
                     {/* <Route path="/orders" element={<OrdersPage />} /> */}
                 </Route>
-                <AdminContextProvider>
-                    <Route path="/admin" element={<AdminLayout />}>
-                        <Route path="/admin/dashboard" element={<AdminDashboard />} />
-                        <Route path="/admin/orders" element={<AdminOrdersPage />} />
-                        <Route path="/admin/products" element={<AdminProductsPage />} />
-                        <Route path="/admin/feedbacks" element={<AdminFeedbacksPage />} />
-                    </Route>
-                </AdminContextProvider>
+                <Route
+                    path="/admin"
+                    element={
+                        <AdminContextProvider>
+                            <AdminLayout />
+                        </AdminContextProvider>
+                    }
+                >
+                    <Route path="/admin/dashboard" element={<AdminDashboard />} />
+                    <Route path="/admin/orders" element={<AdminOrdersPage />} />
+                    <Route path="/admin/products" element={<AdminProductsPage />} />
+                    <Route path="/admin/feedbacks" element={<AdminFeedbacksPage />} />
+                </Route>
                 <Route path="*" element={<NotFoundPage />} />
             </Routes>
         </BrowserRouter>
