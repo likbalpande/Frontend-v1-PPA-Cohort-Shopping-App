@@ -14,6 +14,8 @@ import { AdminOrdersPage } from "./pages/Admin/AdminOrdersPage";
 import { AdminFeedbacksPage } from "./pages/Admin/AdminFeedbacksPage";
 import { AdminProductsPage } from "./pages/Admin/AdminProductsPage";
 import { AdminContextProvider } from "./context/AdminContext";
+import { PaymentPage } from "./pages/PaymentPage";
+import { OrdersPage } from "./pages/OrdersPage";
 
 const App = () => {
     const { appLoading, isLoggedIn } = useAuthContext();
@@ -50,10 +52,12 @@ const App = () => {
                     <Route path="/" element={<HomePage />} />
                     <Route path="/search" element={<SearchPage />} />
                     <Route path="/view/:productId" element={<ViewPage />} />
+                    <Route path="/orders" element={<OrdersPage />} />
                     {/* <Route path="/cart" element={<CartPage />} /> */}
                     {/* <Route path="/profile" element={<ProfilePage />} /> */}
                     {/* <Route path="/orders" element={<OrdersPage />} /> */}
                 </Route>
+                <Route path="/payment" element={<PaymentPage />} />
                 <Route
                     path="/admin"
                     element={

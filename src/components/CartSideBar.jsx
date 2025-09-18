@@ -2,15 +2,17 @@ import { ClipLoader } from "react-spinners";
 import { useAuthContext } from "../context/AppContext";
 import { Button } from "./ui/Button";
 import { useNavigate } from "react-router";
-import { useState } from "react";
 
 const CartSideBar = () => {
-    const [address, setAddress] = useState("");
-    const { cart, addToCart, updatingCartState, removeFromCart, handleCheckout } = useAuthContext();
+    const { cart, addToCart, updatingCartState, removeFromCart } = useAuthContext();
     const navigate = useNavigate();
 
     const handleViewProduct = (productId) => {
         navigate(`/view/${productId}`);
+    };
+
+    const handleRedirectToPaymentPage = () => {
+        navigate("/payment");
     };
 
     return (
@@ -53,16 +55,7 @@ const CartSideBar = () => {
                 );
             })}
             <div className="flex flex-col gap-3 items-center justify-center h-30">
-                <textarea
-                    className="border-1 rounded-md px-1 py-0.5"
-                    type="text"
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                    cols={15}
-                />
-                <Button disabled={address.length <= 0} onClick={() => handleCheckout(address)}>
-                    Checkout
-                </Button>
+                <Button onClick={handleRedirectToPaymentPage}>Checkout</Button>
             </div>
         </div>
     );

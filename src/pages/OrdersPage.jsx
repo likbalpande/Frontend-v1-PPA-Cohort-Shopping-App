@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
-import { showErrorToast, showSuccessToast } from "../../../utils/toastMessageHelper";
+import { showErrorToast, showSuccessToast } from "../../utils/toastMessageHelper";
 import { format } from "date-fns";
-import { Button } from "../../components/ui/Button";
+import { Button } from "../components/ui/Button";
 
-const AdminOrdersPage = () => {
+const OrdersPage = () => {
     const [orders, setOrders] = useState([]);
 
     const getAllOrders = async () => {
         try {
-            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/admins/orders`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/orders`, {
                 method: "GET",
                 credentials: "include",
             });
@@ -44,22 +44,13 @@ const AdminOrdersPage = () => {
     useEffect(() => {
         getAllOrders();
     }, []);
+
     return (
         <div className="p-6">
-            <p className="text-2xl font-bold tracking-wide text-pink-500 underline mx-auto my-6">Admin Orders Page</p>
+            <p className="text-2xl font-bold tracking-wide text-pink-500 underline mx-auto my-6">Your Orders</p>
             <div className="flex flex-col gap-5">
                 {orders.map(
-                    ({
-                        _id,
-                        address,
-                        createdAt,
-                        products,
-                        user,
-                        contactNumbers,
-                        orderStatus,
-                        paymentStatus,
-                        paymentDetails,
-                    }) => {
+                    ({ _id, address, createdAt, products, user, contactNumbers, orderStatus, paymentStatus }) => {
                         return (
                             <div key={_id} className="border border-amber-600 bg-amber-100 rounded-lg p-6">
                                 <p>Order Id: {_id}</p>
@@ -75,7 +66,6 @@ const AdminOrdersPage = () => {
                                 <p className="py-2">
                                     Order Status: <span className="p-1 rounded-sm bg-cyan-300">{orderStatus}</span>
                                 </p>
-                                <p>Payment Details: {JSON.stringify(paymentDetails, null, 4)}</p>
                                 <div className="bg-amber-200 p-4 rounded-md flex flex-wrap gap-4">
                                     {products.map(({ _id: itemId, cartQuantity, price, product }) => {
                                         return (
@@ -96,4 +86,4 @@ const AdminOrdersPage = () => {
     );
 };
 
-export { AdminOrdersPage };
+export { OrdersPage };

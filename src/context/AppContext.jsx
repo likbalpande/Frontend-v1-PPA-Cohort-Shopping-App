@@ -133,13 +133,13 @@ const AppContextProvider = ({ children }) => {
         setUser(data);
     };
 
-    const handleCheckout = async (address) => {
+    const handlePlaceOrder = async ({ name, address, city, state, contactNumber1, contactNumber2 }) => {
         try {
             setPlacingOrder(true);
             const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/orders`, {
                 method: "POST",
                 credentials: "include",
-                body: JSON.stringify({ address }),
+                body: JSON.stringify({ name, address, city, state, contactNumber1, contactNumber2 }),
                 headers: {
                     "content-type": "application/json",
                 },
@@ -149,11 +149,17 @@ const AppContextProvider = ({ children }) => {
             if (result.isSuccess) {
                 showSuccessToast(result.message);
                 setCart([]);
+                return {
+                    paymentSessionId: result.data.paymentDetails.payment_session_id,
+                    orderId: result.data.orderId,
+                };
             } else {
                 showErrorToast(result.message);
+                return null;
             }
         } catch (err) {
             showErrorToast(`Error during adding product to cart: ${err.message}`);
+            return null;
         } finally {
             setPlacingOrder(false);
         }
@@ -169,7 +175,7 @@ const AppContextProvider = ({ children }) => {
         addToCart,
         updatingCartState,
         removeFromCart,
-        handleCheckout,
+        handlePlaceOrder,
         placingOrder,
     };
 
